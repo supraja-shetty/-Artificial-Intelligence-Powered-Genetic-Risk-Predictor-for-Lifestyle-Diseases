@@ -1,0 +1,7 @@
+Flask
+flask-material
+pandas
+numpy
+scikit-learn
+joblib
+gunicorn
