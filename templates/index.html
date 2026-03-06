@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lifestyle Disease Predictor</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f4f6f8;
+        }
+        .card-panel {
+            padding: 30px;
+            border-radius: 12px;
+        }
+        .btn-group {
+            margin-top: 20px;
+        }
+        .center-align {
+            text-align: center;
+        }
+        .card .determinate {
+            height: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h4 class="center-align">
+Artificial Intelligence-Powered Genetic Risk Predictor for Lifestyle Diseases</h4>
+
+    <div class="row">
+        <!-- Input Form -->
+        <div class="col s12 m6">
+            <div class="card-panel white">
+                <h5 class="center-align">Enter Your Health Info</h5>
+
+                <form action="{{ url_for('analyze') }}" method="POST">
+
+                    <div class="input-field">
+                        <input type="text" name="age_input" value="{{ age_input or '' }}" required>
+                        <label class="{% if age_input %}active{% endif %}">Age</label>
+                    </div>
+
+                    <div class="input-field">
+                        <input type="text" name="bmi_input" value="{{ bmi_input or '' }}" required>
+                        <label class="{% if bmi_input %}active{% endif %}">BMI</label>
+                    </div>
+
+                    <div class="input-field">
+                        <select name="gender_choice" required>
+                            <option value="" disabled {% if not gender_choice %}selected{% endif %}>Choose gender</option>
+                            <option value="1" {% if gender_choice == 1 %}selected{% endif %}>Male</option>
+                            <option value="0" {% if gender_choice == 0 %}selected{% endif %}>Female</option>
+                        </select>
+                        <label>Gender</label>
+                    </div>
+
+                    <div class="input-field">
+                        <select name="sleep_input" required>
+                            <option value="1" {% if sleep_input == 1 %}selected{% endif %}>Less than 4 hours</option>
+                            <option value="2" {% if sleep_input == 2 %}selected{% endif %}>4 to 10 hours</option>
+                            <option value="3" {% if sleep_input == 3 %}selected{% endif %}>Above 10 hours</option>
+                        </select>
+                        <label>Average Sleep</label>
+                    </div>
+
+                    <div class="input-field">
+                        <select name="junk_input" required>
+                            <option value="1" {% if junk_input == 1 %}selected{% endif %}>Less than 2/week</option>
+                            <option value="2" {% if junk_input == 2 %}selected{% endif %}>2 to 4/week</option>
+                            <option value="3" {% if junk_input == 3 %}selected{% endif %}>Greater than 4/week</option>
+                        </select>
+                        <label>Junk Food Intake</label>
+                    </div>
+
+                    <div class="input-field">
+                        <select name="exercise_input" required>
+                            <option value="1" {% if exercise_input == 1 %}selected{% endif %}>Light</option>
+                            <option value="2" {% if exercise_input == 2 %}selected{% endif %}>Moderate</option>
+                            <option value="3" {% if exercise_input == 3 %}selected{% endif %}>High</option>
+                        </select>
+                        <label>Exercise Level</label>
+                    </div>
+
+                    <div class="input-field">
+                        <select name="smoking_input" required>
+                            <option value="0" {% if smoking_input == 0 %}selected{% endif %}>Less than 5/month</option>
+                            <option value="1" {% if smoking_input == 1 %}selected{% endif %}>More than 5/month</option>
+                        </select>
+                        <label>Smoking</label>
+                    </div>
+
+                    <div class="input-field">
+                        <select name="drinking_input" required>
+                            <option value="0" {% if drinking_input == 0 %}selected{% endif %}>Less than 5/month</option>
+                            <option value="1" {% if drinking_input == 1 %}selected{% endif %}>More than 5/month</option>
+                        </select>
+                        <label>Drinking</label>
+                    </div>
+
+                    <div class="center-align btn-group">
+                        <button type="submit" class="btn blue">PREDICT RISK</button>
+                        <button type="reset" class="btn grey">CLEAR</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- Prediction Results -->
+        <div class="col s12 m6">
+            <div class="row">
+
+                <!-- Diabetes Risk Card -->
+                <div class="col s12">
+                    <div class="card {% if diabetes_risk == 'High' %}red lighten-2{% elif diabetes_risk == 'Moderate' %}orange lighten-2{% else %}green lighten-2{% endif %} white-text hoverable">
+                        <div class="card-content">
+                            <span class="card-title">Diabetes</span>
+                            <p class="flow-text">{{ diabetes_risk }}</p>
+                            <div class="progress">
+                                <div class="determinate {% if diabetes_risk == 'High' %}red{% elif diabetes_risk == 'Moderate' %}orange{% else %}green{% endif %}" style="width: {% if diabetes_risk == 'High' %}100%{% elif diabetes_risk == 'Moderate' %}60%{% else %}30%{% endif %};"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hypertension Risk Card -->
+                <div class="col s12">
+                    <div class="card {% if hypertension_risk == 'High' %}red lighten-2{% elif hypertension_risk == 'Moderate' %}orange lighten-2{% else %}green lighten-2{% endif %} white-text hoverable">
+                        <div class="card-content">
+                            <span class="card-title">Hypertension</span>
+                            <p class="flow-text">{{ hypertension_risk }}</p>
+                            <div class="progress">
+                                <div class="determinate {% if hypertension_risk == 'High' %}red{% elif hypertension_risk == 'Moderate' %}orange{% else %}green{% endif %}" style="width: {% if hypertension_risk == 'High' %}100%{% elif hypertension_risk == 'Moderate' %}60%{% else %}30%{% endif %};"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Depression Risk Card -->
+                <div class="col s12">
+                    <div class="card {% if depression_risk == 'High' %}red lighten-2{% elif depression_risk == 'Moderate' %}orange lighten-2{% else %}green lighten-2{% endif %} white-text hoverable">
+                        <div class="card-content">
+                            <span class="card-title">Depression</span>
+                            <p class="flow-text">{{ depression_risk }}</p>
+                            <div class="progress">
+                                <div class="determinate {% if depression_risk == 'High' %}red{% elif depression_risk == 'Moderate' %}orange{% else %}green{% endif %}" style="width: {% if depression_risk == 'High' %}100%{% elif depression_risk == 'Moderate' %}60%{% else %}30%{% endif %};"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Health Recommendations -->
+    {% if recommendations %}
+    <div class="card-panel white">
+        <h5 class="center-align">Personalized Health Recommendations</h5>
+        <ul class="collection">
+
+            {% if recommendations.get('Diabetes') %}
+            <li class="collection-item">
+                <strong>Diabetes:</strong> {{ recommendations['Diabetes'] }}
+            </li>
+            {% endif %}
+
+            {% if recommendations.get('Hypertension') %}
+            <li class="collection-item">
+                <strong>Hypertension:</strong> {{ recommendations['Hypertension'] }}
+            </li>
+            {% endif %}
+
+            {% if recommendations.get('Depression') %}
+            <li class="collection-item">
+                <strong>Depression:</strong> {{ recommendations['Depression'] }}
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Contributing Factors -->
+    {% if contributing_factors %}
+    <div class="card-panel white">
+        <h5 class="center-align">Contributing Factors</h5>
+        <ul class="collection">
+
+            {% if contributing_factors['Diabetes'] %}
+            <li class="collection-item">
+                <strong>Diabetes:</strong> {{ contributing_factors['Diabetes']|join(', ') }}
+            </li>
+            {% endif %}
+
+            {% if contributing_factors['Hypertension'] %}
+            <li class="collection-item">
+                <strong>Hypertension:</strong> {{ contributing_factors['Hypertension']|join(', ') }}
+            </li>
+            {% endif %}
+
+            {% if contributing_factors['Depression'] %}
+            <li class="collection-item">
+                <strong>Depression:</strong> {{ contributing_factors['Depression']|join(', ') }}
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+    {% endif %}
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $('select').formSelect();
+});
+</script>
+
+</body>
+</html>
